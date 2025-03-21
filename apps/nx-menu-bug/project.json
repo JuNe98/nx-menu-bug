@@ -7,13 +7,67 @@
   "tags": [],
   "targets": {
     "build": {
+      "executor": "@angular-architects/native-federation:build",
+      "options": {},
+      "configurations": {
+        "production": {
+          "target": "nx-menu-bug:esbuild:production"
+        },
+        "development": {
+          "target": "nx-menu-bug:esbuild:development",
+          "dev": true
+        }
+      },
+      "defaultConfiguration": "production"
+    },
+    "serve": {
+      "executor": "@angular-architects/native-federation:build",
+      "options": {
+        "target": "nx-menu-bug:serve-original:development",
+        "rebuildDelay": 0,
+        "dev": true,
+        "port": 0
+      }
+    },
+    "extract-i18n": {
+      "executor": "@angular-devkit/build-angular:extract-i18n",
+      "options": {
+        "buildTarget": "nx-menu-bug:build"
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    },
+    "test": {
+      "executor": "@nx/vite:test",
+      "outputs": [
+        "{options.reportsDirectory}"
+      ],
+      "options": {
+        "reportsDirectory": "../../coverage/apps/nx-menu-bug"
+      }
+    },
+    "serve-static": {
+      "executor": "@nx/web:file-server",
+      "options": {
+        "buildTarget": "nx-menu-bug:build",
+        "staticFilePath": "dist/apps/nx-menu-bug/browser",
+        "spa": true
+      }
+    },
+    "esbuild": {
       "executor": "@angular-devkit/build-angular:application",
-      "outputs": ["{options.outputPath}"],
+      "outputs": [
+        "{options.outputPath}"
+      ],
       "options": {
         "outputPath": "dist/apps/nx-menu-bug",
         "index": "apps/nx-menu-bug/src/index.html",
         "browser": "apps/nx-menu-bug/src/main.ts",
-        "polyfills": ["zone.js"],
+        "polyfills": [
+          "zone.js",
+          "es-module-shims"
+        ],
         "tsConfig": "apps/nx-menu-bug/tsconfig.app.json",
         "inlineStyleLanguage": "scss",
         "assets": [
@@ -22,7 +76,9 @@
             "input": "apps/nx-menu-bug/public"
           }
         ],
-        "styles": ["apps/nx-menu-bug/src/styles.scss"],
+        "styles": [
+          "apps/nx-menu-bug/src/styles.scss"
+        ],
         "scripts": []
       },
       "configurations": {
@@ -49,40 +105,19 @@
       },
       "defaultConfiguration": "production"
     },
-    "serve": {
+    "serve-original": {
       "executor": "@angular-devkit/build-angular:dev-server",
       "configurations": {
         "production": {
-          "buildTarget": "nx-menu-bug:build:production"
+          "buildTarget": "nx-menu-bug:esbuild:production"
         },
         "development": {
-          "buildTarget": "nx-menu-bug:build:development"
+          "buildTarget": "nx-menu-bug:esbuild:development"
         }
       },
-      "defaultConfiguration": "development"
-    },
-    "extract-i18n": {
-      "executor": "@angular-devkit/build-angular:extract-i18n",
+      "defaultConfiguration": "development",
       "options": {
-        "buildTarget": "nx-menu-bug:build"
-      }
-    },
-    "lint": {
-      "executor": "@nx/eslint:lint"
-    },
-    "test": {
-      "executor": "@nx/vite:test",
-      "outputs": ["{options.reportsDirectory}"],
-      "options": {
-        "reportsDirectory": "../../coverage/apps/nx-menu-bug"
-      }
-    },
-    "serve-static": {
-      "executor": "@nx/web:file-server",
-      "options": {
-        "buildTarget": "nx-menu-bug:build",
-        "staticFilePath": "dist/apps/nx-menu-bug/browser",
-        "spa": true
+        "port": 4200
       }
     }
   }
